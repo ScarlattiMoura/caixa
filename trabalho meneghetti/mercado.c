@@ -1,14 +1,53 @@
 #include<stdio.h>
 #include<string.h>
 
-void novacompra(){};
-void funcionarios(){};
-
-//
-void itensatuais(){}
+//ITENS
+void itenscadastrados(){}
 void novoitem(){}
 void removeritem(){}
 //
+
+//FUNCIONARIOS
+void addfuncionario(){}
+void removerfuncionario(){}
+void funcionarioscadastrados(){}
+//
+
+void novacompra(){};
+
+void funcionarios(){
+    int funcionariosopcao;
+    do{
+        printf("====  FUNCIONARIOS  ====");
+
+        printf("\nOpcoes disponiveis :\n");
+        printf("\n1.Adicionar funcionario\n");
+        printf("2.Remover funcionario\n");
+        printf("3.Funcionarios cadastrados\n");
+        printf("0.Voltar ao menu inicial");
+        printf("\n Digite a opcao desejada: ");
+        scanf("%d", &funcionariosopcao);
+
+        switch (funcionariosopcao){
+            case 1:
+            addfuncionario();
+            break;
+        case 2:
+            removerfuncionario();
+            break;
+        case 3:
+            funcionarioscadastrados();
+            break;
+        case 0:
+                funcionariosopcao = 0;
+        break;
+        default:
+            printf("\n OPCAO INVALIDA!!!\n");
+            break;
+        }
+    } while (funcionariosopcao!= 0);
+
+};
 
 void itens(){
     int itensopcao;
@@ -16,7 +55,7 @@ void itens(){
     do
     {
         printf("\n==== ITENS ====\n");
-        printf("\n1.Itens atuais\n");
+        printf("\n1.Itens cadastrados\n");
         printf("2.Adicionar novo item\n");
         printf("3.Remover item\n");
         printf("0.Voltar ao menu inicial\n");
@@ -25,7 +64,7 @@ void itens(){
 
             switch (itensopcao){
             case 1:
-            itensatuais();
+            itenscadastrados();
             break;
         case 2:
             novoitem();
