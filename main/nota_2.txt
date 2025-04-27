@@ -1,0 +1,11 @@
+Numero da nota: 2
+Funcionario: joao
+Cliente: clara
+Quantidade de itens: 5
+Itens:
+- banana
+- maça
+- garfo
+- tempero
+- abacaxi
+3

@@ -1,0 +1,8 @@
+Numero da nota: 5
+Funcionario: joao
+Cliente: joana
+Quantidade de itens: 3
+Itens:
+- banana
+- laranja
+- maçã

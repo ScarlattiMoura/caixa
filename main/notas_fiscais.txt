@@ -1,0 +1,16 @@
+Código: 3
+Funcionário: 
+Cliente: joao
+Data: Sat Apr 26 20:04:31 2025
+Itens:
+- banana, Quantidade: 2, Preço: R$50.00
+Total: R$100.00
+--------------------------------
+Código: 5
+Funcionário: 
+Cliente: jogi
+Data: Sat Apr 26 20:16:11 2025
+Itens:
+- ji, Quantidade: 6, Preço: R$6.00
+Total: R$36.00
+--------------------------------
