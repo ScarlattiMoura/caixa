@@ -1,139 +1,144 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <payment.h>
+#include <time.h>
+#include "../items/items.h"
+#include "../employee/employee.h"
+#include "../payment/payment.h"
 
+#define SALES_FILE_PATH "registration/sales.txt"
 
+static CartItem cart[100];
+static int cart_size = 0;
 
-// caixa
-void mostra_caixa(float valor) {
-    
-    printf("\n");
-    printf("  ╔══════════════════╗\n");
-    printf("  ║  ┌────────────┐  ║\n");
-    printf("  ║  │ R$ %7.2f │  ║\n", valor);
-    printf("  ║  └────────────┘  ║\n");
-    printf("  ║  ┌──────┬──────┐ ║\n");
-    printf("  ║  │ PIX  │ CART │ ║\n");
-    printf("  ║  └──────┴──────┘ ║\n");
-    printf("  ╚══════════════════╝\n");
-}
+// Função para escolher funcionário
+Employee choose_employee() {
+    load_employees_from_file();
+    printf("Funcionários disponíveis:\n");
 
-void limpa_buffer() {
-    while(getchar() != '\n');
-}
-
-void pagarcomcartao(char *tipo) {
-    char numcartao[17], nome[50], validade[6], cvv[4];
-
-    printf("\nPagando com %s\n", tipo);
-    printf("Número do cartão: ");
-    scanf("%16s", numcartao);
-    limpa_buffer();
-
-    printf("Nome no cartão: ");
-    fgets(nome, 50, stdin);
-    nome[strlen(nome)-1] = '\0';
-
-    printf("Validade (MM/AA): ");
-    scanf("%5s", validade);
-    limpa_buffer();
-
-    printf("CVV: ");
-    scanf("%3s", cvv);
-    limpa_buffer();
-
-    printf("\nProcessando %s... cartão %s\n", tipo, numcartao);
-    printf(">>> %s aprovado!\n", tipo);
-}
-
-void pagarcompix() {
-    char chave[100];
-    int opcao;
-
-    printf("\nPIX !\n");
-    printf("1 - CPF\n2 - Email\n3 - Celular\n4 - Chave aleatória\n>>> Qual chave vai usar?:  ");
-    scanf("%d", &opcao);
-    limpa_buffer();
-
-    switch(opcao) {
-        case 1: 
-          printf("CPF: "); 
-          break;
-        case 2: 
-          printf("Email: "); 
-          break;
-        case 3: 
-          printf("Celular: "); 
-          break;
-        case 4: 
-          printf("Chave aleatória: "); 
-          break;
-        default: 
-          printf(">>> Opção inválida!\n"); 
-          return;
+    for (int i = 0; i < get_employee_count(); i++) {
+        Employee *e = get_employee_by_index(i);
+        printf("ID: %d | Nome: %s\n", e->id, e->name);
     }
-    scanf("%99s", chave);
-    limpa_buffer();
 
-    printf("\nGerando QR Code pra %s...\n", chave);
-    printf(">>> Transferência concluída!\n");
+    int id;
+    printf("Digite o ID do funcionário que está atendendo: ");
+    scanf("%d", &id);
+
+    Employee *e = get_employee_by_id(id);
+    if (e == NULL) {
+        printf("Funcionário não encontrado! Cancelando venda.\n");
+        sleep(2);
+        exit(1);
+    }
+    return *e;
 }
 
-void pagarcomdinheiro(float total) {
-    float recebido;
+// Função para escolher itens
+void choose_items() {
+    load_items_from_file();
+    printf("Itens disponíveis:\n");
 
-    printf("\nPagando em espécie\n");
-    printf(">>> Total: R$ %.2f\n", total);
+    for (int i = 0; i < get_item_count(); i++) {
+        Item *it = get_item_by_index(i);
+        printf("ID: %d | Nome: %s | Preço: %.2f | Estoque: %d\n",
+               it->id, it->name, it->price, it->qnty);
+    }
 
-    do {
-        printf(">>>Valor recebido: R$ ");
-        scanf("%f", &recebido);
-        limpa_buffer();
-        if (recebido < total) printf(">>> Valor não está pago totalmente! Falta R$ %.2f\n", total - recebido);
-    } while(recebido < total);
+    while (1) {
+        int id, quantity;
+        printf("Digite o ID do item a adicionar (ou -1 para finalizar): ");
+        scanf("%d", &id);
 
-    if (recebido > total) printf(">>> Seu troco: R$ %.2f\n", recebido - total);
-    printf(">>> Transferência concluída!\n");
-}
+        if (id == -1) break;
 
-int main() {
-    int opcao;
-    float total;
-  
-    printf("==== Sistema de pagamento ===\n");
-    printf(">>> Valor a ser pago: R$ ");
-    scanf("%f", &total);
-    limpa_buffer();
-
-    mostra_caixa(total);
-
-    do {
-        printf("\n[1] Débito\n[2] Crédito\n[3] PIX\n[4] Dinheiro\n[5] Sair\n>>> Escolha: ");
-        scanf("%d", &opcao);
-        limpa_buffer();
-
-        switch(opcao) {
-            case 1: 
-              pagarcomcartao("DÉBITO");
-              break;
-            case 2: 
-              pagarcomcartao("CRÉDITO"); 
-              break;
-            case 3: 
-              pagarcompix(); 
-              break;
-            case 4: 
-              pagarcomdinheiro(total); 
-              break;
-            case 5: 
-              printf(">>> Fechou então!\n"); 
-              break;
-            default: 
-              printf(">>> Opção errada!\n");
+        Item *it = get_item_by_id(id);
+        if (it == NULL) {
+            printf("Item não encontrado.\n");
+            continue;
         }
-    } while(opcao != 5);
 
-    mostra_caixa(0.00); 
-    return 0;
+        printf("Digite a quantidade: ");
+        scanf("%d", &quantity);
+
+        if (quantity <= 0 || quantity > it->qnty) {
+            printf("Quantidade inválida.\n");
+            continue;
+        }
+
+        cart[cart_size].item = *it;
+        cart[cart_size].quantity = quantity;
+        cart_size++;
+    }
+}
+
+// Função para escolher forma de pagamento
+const char* choose_payment_method() {
+    int opcao;
+    printf("Formas de pagamento:\n");
+    printf("1 - Dinheiro\n");
+    printf("2 - Cartão\n");
+    printf("3 - Pix\n");
+    printf("Escolha: ");
+    scanf("%d", &opcao);
+
+    switch (opcao) {
+        case 1: return "Dinheiro";
+        case 2: return "Cartão";
+        case 3: return "Pix";
+        default: return "Desconhecido";
+    }
+}
+
+// Função para gerar nota fiscal
+void generate_receipt(Employee atendente, const char* payment_method, float total) {
+    time_t now = time(NULL);
+    struct tm *tm_info = localtime(&now);
+
+    char time_buffer[64];
+    strftime(time_buffer, sizeof(time_buffer), "%d/%m/%Y %H:%M:%S", tm_info);
+
+    printf("\033[H\033[J");
+    printf("========== NOTA FISCAL ==========\n");
+    printf("Data: %s\n", time_buffer);
+    printf("Atendente: %s\n\n", atendente.name);
+
+    for (int i = 0; i < cart_size; i++) {
+        printf("%s x%d - R$ %.2f\n", cart[i].item.name, cart[i].quantity, cart[i].item.price * cart[i].quantity);
+    }
+
+    printf("\nForma de pagamento: %s\n", payment_method);
+    printf("TOTAL: R$ %.2f\n", total);
+    printf("=================================\n");
+
+    FILE *f = fopen(SALES_FILE_PATH, "a");
+    if (f) {
+        fprintf(f, "Data: %s\n", time_buffer);
+        fprintf(f, "Atendente: %s\n", atendente.name);
+        for (int i = 0; i < cart_size; i++) {
+            fprintf(f, "%s x%d - R$ %.2f\n", cart[i].item.name, cart[i].quantity, cart[i].item.price * cart[i].quantity);
+        }
+        fprintf(f, "Forma de pagamento: %s\n", payment_method);
+        fprintf(f, "TOTAL: R$ %.2f\n", total);
+        fprintf(f, "---------------------------------\n");
+        fclose(f);
+    }
+}
+
+// Função principal
+void make_payment() {
+    cart_size = 0;
+    Employee atendente = choose_employee();
+    choose_items();
+    const char *payment_method = choose_payment_method();
+
+    float total = 0.0;
+    for (int i = 0; i < cart_size; i++) {
+        total += cart[i].item.price * cart[i].quantity;
+    }
+
+    generate_receipt(atendente, payment_method, total);
+
+    printf("\nVenda concluída!\n");
+    sleep(3);
 }

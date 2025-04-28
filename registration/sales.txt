@@ -1,0 +1,6 @@
+Data: 28/04/2025 16:20:21
+Atendente: camila
+pera x3 - R$ 162.90
+Forma de pagamento: Dinheiro
+TOTAL: R$ 162.90
+---------------------------------

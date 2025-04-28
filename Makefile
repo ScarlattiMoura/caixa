@@ -1,8 +1,8 @@
 CC = gcc
-CFLAGS = -Wall -Wextra -std=c99 -I./items -I./employee -I./establishment -I./main -I./menu
+CFLAGS = -Wall -Wextra -std=c99 -I./items -I./employee -I./establishment -I./main -I./menu -I./payment
 LDFLAGS = -lncurses
 
-SRC = main/main.c items/items.c employee/employee.c establishment/establishment.c menu/menu.c
+SRC = main/main.c items/items.c employee/employee.c establishment/establishment.c menu/menu.c payment/payment.c
 OBJ = $(SRC:.c=.o)
 TARGET = caixa
 

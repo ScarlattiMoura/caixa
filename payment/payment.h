@@ -1,21 +1,14 @@
-#pragma once 
-#include <../main/utils.h>
+#pragma once
 
+// Estrutura de item no carrinho
 typedef struct {
-    char chave[100];
-    int opcao;
-    char numcartao[17];
-    char nome[50];
-    char validade[6];
-    char cvv[4];
-    float recebido;
-    int opcao;
-    float total;
-} payment, *payment;
+    Item item;
+    int quantity;
+} CartItem;
 
-void mostra_caixa(float valor);
-void limpa_buffer();
-void pagarcomcartao(char *tipo);
-void pagarcompix();
-void pagarcomdinheiro(float total);
-void mostra_caixa(total);
+// Funções principais
+Employee choose_employee();
+void choose_items();
+const char* choose_payment_method();
+void generate_receipt(Employee atendente, const char* payment_method, float total);
+void make_payment();
