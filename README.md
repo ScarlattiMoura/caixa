@@ -63,7 +63,7 @@ caixa/
 │   └── sales.txt
 ├── Makefile
 └── README.md
-
+```bash
 ## 📦 Pré-requisitos
 
 Antes de compilar o projeto, você precisa ter:
@@ -76,9 +76,10 @@ Antes de compilar o projeto, você precisa ter:
 
 Instalar GCC e Ncurses no Ubuntu/Debian
 
+```bash
 sudo apt update
 sudo apt install build-essential libncurses5-dev libncursesw5-dev
-
+```bash
 
 ## ⚙️ Como compilar o projeto
 
