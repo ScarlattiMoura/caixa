@@ -4,3 +4,9 @@ pera x3 - R$ 162.90
 Forma de pagamento: Dinheiro
 TOTAL: R$ 162.90
 ---------------------------------
+Data: 28/04/2025 22:36:09
+Atendente: pedro
+pera x1 - R$ 54.30
+Forma de pagamento: Cartão
+TOTAL: R$ 54.30
+---------------------------------
